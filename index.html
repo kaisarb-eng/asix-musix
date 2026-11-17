@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a0902">
+<title>Asix Musix</title>
+<!-- Asix Musix (AMX) - index.html (File 4). Memenuhi fitur 3. -->
+<!-- Semua class amx-* didefinisikan di css/style.css (File 5). Struktur ini baru tampil rapi setelah File 5 ada. -->
+<!-- Isi daftar/kartu dibuat js/ui.js dari <template>, memakai textContent (aman dari XSS). -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Tailwind via CDN seperti referensi: praktis, tapi bukan praktik terbaik untuk produksi. -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: { sans: ['Roboto', 'system-ui', 'sans-serif'] },
+    colors: { brand: { 300: '#fdba74', 400: '#fb923c', 500: '#ff7a00', 600: '#ea580c', 700: '#c2410c', 900: '#7c2d12', 950: '#431407' } }
+  } } };
+</script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-white antialiased">
+
+<!-- Kumpulan ikon (dipakai lewat <use href="#i-...">) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></symbol>
+  <symbol id="i-acak" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></symbol>
+  <symbol id="i-turun" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></symbol>
+  <symbol id="i-antrean" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h10v2H4zm0 5h10v2H4zm12-5v6l5-3z"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.96 8.96 0 0 0 12 4a9 9 0 1 0 0 18 9 9 0 0 0 7.03-14.61zM12 20a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></symbol>
+  <symbol id="i-hati" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></symbol>
+  <symbol id="i-cari" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+  <symbol id="i-tutup" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
+  <symbol id="i-hapus" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></symbol>
+  <symbol id="i-pasang" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+  <symbol id="i-admin" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></symbol>
+  <symbol id="i-not" viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></symbol>
+</svg>
+
+<div id="app" class="amx-app">
+
+  <!-- ============ BERANDA ============ -->
+  <main id="layar-beranda" class="amx-beranda">
+    <header class="flex items-center gap-3 px-4 pt-4">
+      <div class="amx-logo"><span>a6</span><img id="logo-app" src="assets/logo.png" alt="Logo Asix Musix" onerror="this.remove()"></div>
+      <div class="flex-1 min-w-0">
+        <h1 class="text-lg font-bold leading-tight">Asix Musix</h1>
+        <p class="text-[11px] uppercase tracking-wider text-orange-200/70">Asix Selalu Itu Keren</p>
+      </div>
+      <button id="btn-pasang" class="amx-ikon hidden" aria-label="Pasang ke layar utama"><svg class="ik"><use href="#i-pasang"/></svg></button>
+      <button id="btn-admin" class="amx-ikon hidden" aria-label="Panel admin"><svg class="ik"><use href="#i-admin"/></svg></button>
+    </header>
+
+    <div id="badge-preview" class="amx-badge hidden">Mode preview: memakai data contoh</div>
+
+    <div class="px-4 mt-4">
+      <label class="amx-cari">
+        <svg class="ik"><use href="#i-cari"/></svg>
+        <input id="input-cari" type="search" placeholder="Cari judul atau artis" autocomplete="off" enterkeyhint="search" aria-label="Cari lagu">
+      </label>
+    </div>
+
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar px-4 mt-3" aria-label="Filter playlist">
+      <div id="chip-playlist" class="flex gap-2"></div>
+      <button id="btn-favorit" class="amx-chip" aria-pressed="false"><svg class="ik ik-kecil"><use href="#i-hati"/></svg> Favorit</button>
+    </div>
+
+    <button id="banner-lanjut" class="amx-banner hidden">
+      <span class="text-[11px] uppercase tracking-wider text-orange-200/80">Lanjutkan terakhir diputar</span>
+      <b id="lanjut-judul" class="block truncate"></b>
+    </button>
+
+    <section class="px-4 mt-4 pb-40">
+      <div id="daftar-lagu" class="space-y-2"></div>
+      <p id="status-daftar" class="amx-status" role="status"></p>
+      <div id="sentinel" class="h-1"></div>
+      <p class="amx-catatan">Untuk pemakaian non-komersial. Cek syarat lisensi tiap lagu sebelum memakainya di tempat lain.</p>
+    </section>
+  </main>
+
+  <!-- ============ MINI PLAYER ============ -->
+  <aside id="mini-player" class="amx-mini hidden" aria-label="Mini player">
+    <div class="amx-bar"><i id="mini-progres"></i></div>
+    <div class="flex items-center gap-2">
+      <button id="mini-buka" class="flex items-center gap-3 flex-1 min-w-0 text-left" aria-label="Buka layar Now Playing">
+        <div id="mini-cover" class="amx-cover w-11 h-11"><svg class="ik"><use href="#i-not"/></svg></div>
+        <div class="min-w-0">
+          <p id="mini-judul" class="amx-judul"></p>
+          <p id="mini-artis" class="amx-artis"></p>
+        </div>
+      </button>
+      <button id="btn-mini-play" class="amx-ikon amx-play" data-status="jeda" aria-label="Putar atau jeda">
+        <svg class="ik ik-play"><use href="#i-play"/></svg><svg class="ik ik-pause"><use href="#i-pause"/></svg>
+      </button>
+      <button id="btn-mini-next" class="amx-ikon" aria-label="Lagu berikutnya"><svg class="ik"><use href="#i-next"/></svg></button>
+    </div>
+  </aside>
+
+  <!-- ============ NOW PLAYING (referensi kode 1) ============ -->
+  <section id="layar-np" class="amx-layar hidden" aria-label="Sedang diputar">
+    <header class="flex items-center justify-between px-4 pt-4">
+      <button id="btn-np-tutup" class="amx-ikon" aria-label="Tutup"><svg class="ik"><use href="#i-turun"/></svg></button>
+      <div class="text-center">
+        <p class="text-sm font-semibold">Sedang Diputar</p>
+        <p class="text-[11px] uppercase tracking-wider text-orange-200/70">Asix Musix</p>
+      </div>
+      <button id="btn-np-antrean" class="amx-ikon" aria-label="Buka antrean putar"><svg class="ik"><use href="#i-antrean"/></svg></button>
+    </header>
+
+    <div class="px-6 mt-4">
+      <div class="relative">
+        <div id="np-cover" class="amx-cover amx-cover-besar"><svg class="ik"><use href="#i-not"/></svg></div>
+        <button id="btn-np-hati" class="amx-ikon amx-hati absolute bottom-3 right-3" aria-label="Favorit" aria-pressed="false"><svg class="ik"><use href="#i-hati"/></svg></button>
+      </div>
+    </div>
+
+    <div class="px-6 mt-5 text-center">
+      <h2 id="np-judul" class="text-2xl font-bold truncate"></h2>
+      <p id="np-artis" class="text-sm text-white/70 truncate"></p>
+      <p class="amx-lisensi"><a id="np-sumber" target="_blank" rel="noopener"></a> <span>&middot;</span> <a id="np-lisensi" target="_blank" rel="noopener"></a></p>
+    </div>
+
+    <div class="px-6 mt-4">
+      <input id="np-seek" class="amx-range" type="range" min="0" max="100" step="0.1" value="0" aria-label="Posisi lagu">
+      <div class="flex justify-between text-[11px] font-medium text-white/60 mt-1">
+        <span id="np-waktu">0:00</span><span id="np-durasi">0:00</span>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between px-6 mt-2">
+      <button id="btn-np-acak" class="amx-ikon" aria-label="Acak" aria-pressed="false"><svg class="ik"><use href="#i-acak"/></svg></button>
+      <button id="btn-np-prev" class="amx-ikon amx-ikon-besar" aria-label="Lagu sebelumnya"><svg class="ik"><use href="#i-prev"/></svg></button>
+      <button id="btn-np-play" class="amx-play amx-play-besar" data-status="jeda" aria-label="Putar atau jeda">
+        <svg class="ik ik-play"><use href="#i-play"/></svg><svg class="ik ik-pause"><use href="#i-pause"/></svg>
+      </button>
+      <button id="btn-np-next" class="amx-ikon amx-ikon-besar" aria-label="Lagu berikutnya"><svg class="ik"><use href="#i-next"/></svg></button>
+      <button id="btn-np-timer" class="amx-ikon relative" aria-label="Timer Pomodoro">
+        <svg class="ik"><use href="#i-timer"/></svg><span id="np-timer-sisa" class="amx-lencana hidden"></span>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-3 px-6 mt-5">
+      <svg class="ik ik-kecil text-orange-200/60"><use href="#i-volume"/></svg>
+      <input id="np-volume" class="amx-range" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+    </div>
+  </section>
+
+  <!-- ============ ANTREAN PUTAR (referensi kode 2) ============ -->
+  <section id="layar-antrean" class="amx-layar hidden" aria-label="Antrean putar">
+    <header class="flex items-center justify-between px-4 pt-4">
+      <button id="btn-antrean-tutup" class="amx-ikon" aria-label="Tutup antrean"><svg class="ik"><use href="#i-turun"/></svg></button>
+      <div class="text-center">
+        <h2 class="text-base font-bold">Antrean Putar</h2>
+        <p id="antrean-jumlah" class="text-[11px] uppercase tracking-wider text-orange-200/70">0 lagu</p>
+      </div>
+      <span class="w-10"></span>
+    </header>
+    <div class="amx-scroll px-4 mt-3 pb-8">
+      <div class="amx-kartu amx-kartu-aktif">
+        <div id="antrean-cover" class="amx-cover w-14 h-14"><svg class="ik"><use href="#i-not"/></svg></div>
+        <div class="min-w-0 flex-1">
+          <p class="amx-label">Sedang Diputar</p>
+          <p id="antrean-judul" class="amx-judul"></p>
+          <p id="antrean-artis" class="amx-artis"></p>
+        </div>
+        <button id="btn-antrean-play" class="amx-play" data-status="jeda" aria-label="Putar atau jeda">
+          <svg class="ik ik-play"><use href="#i-play"/></svg><svg class="ik ik-pause"><use href="#i-pause"/></svg>
+        </button>
+      </div>
+      <div class="flex items-center justify-between mt-4 mb-2">
+        <span id="antrean-label" class="text-xs font-semibold text-orange-100/80">Daftar Lagu</span>
+        <button id="btn-antrean-acak" class="amx-pil" aria-pressed="false"><svg class="ik ik-kecil"><use href="#i-acak"/></svg> Acak</button>
+      </div>
+      <div id="daftar-antrean" class="space-y-2"></div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL ADMIN ============ -->
+  <section id="layar-admin" class="amx-layar hidden" aria-label="Panel admin">
+    <header class="flex items-center justify-between px-4 pt-4">
+      <button id="btn-admin-tutup" class="amx-ikon" aria-label="Tutup panel admin"><svg class="ik"><use href="#i-tutup"/></svg></button>
+      <h2 class="text-base font-bold">Panel Admin</h2>
+      <span class="w-10"></span>
+    </header>
+    <div class="amx-scroll px-4 mt-3 pb-8">
+      <div id="admin-masuk" class="amx-panel text-center">
+        <p class="text-sm text-white/80">Masuk dengan akun Google admin untuk mengelola katalog.</p>
+        <button id="btn-admin-masuk" class="amx-tombol mt-3">Masuk dengan Google</button>
+        <p id="admin-pesan" class="amx-status" role="status"></p>
+      </div>
+
+      <div id="admin-isi" class="hidden">
+        <div class="flex items-center justify-between gap-2">
+          <p id="admin-email" class="text-xs text-white/70 truncate"></p>
+          <button id="btn-admin-keluar" class="amx-pil">Keluar</button>
+        </div>
+        <div class="amx-seg mt-3">
+          <button id="seg-kelola" data-seg="kelola" aria-pressed="true">Kelola Lagu</button>
+          <button id="seg-impor" data-seg="impor" aria-pressed="false">Impor Jamendo</button>
+        </div>
+
+        <div id="panel-kelola" class="mt-3">
+          <div id="daftar-admin" class="space-y-2"></div>
+          <p id="admin-status" class="amx-status" role="status"></p>
+          <button id="btn-admin-muat" class="amx-pil hidden mx-auto mt-2">Muat lagi</button>
+        </div>
+
+        <div id="panel-impor" class="mt-3 hidden">
+          <form id="form-impor" class="flex gap-2">
+            <input id="impor-tag" class="amx-input" type="text" placeholder="Tag: instrumental, piano, lofi, guitar" autocomplete="off" aria-label="Tag Jamendo">
+            <button type="submit" class="amx-tombol">Cari</button>
+          </form>
+          <p id="impor-status" class="amx-status" role="status"></p>
+          <div id="impor-hasil" class="space-y-2 mt-2"></div>
+          <div id="impor-simpan-wadah" class="amx-panel mt-3 hidden">
+            <p class="text-xs text-white/70 mb-2">Playlist untuk lagu yang dicentang:</p>
+            <div id="impor-playlist" class="flex flex-wrap gap-2"></div>
+            <button id="btn-impor-simpan" class="amx-tombol w-full mt-3">Simpan ke katalog</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODAL ============ -->
+  <div id="modal-timer" class="amx-modal hidden" role="dialog" aria-modal="true" aria-label="Timer Pomodoro">
+    <div class="amx-modal-isi">
+      <h3 class="text-base font-bold">Timer Pomodoro</h3>
+      <p id="timer-info" class="text-xs text-white/70 mt-1">Musik berhenti otomatis setelah waktu yang dipilih.</p>
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <button class="amx-tombol-ghost" data-menit="15">15 menit</button>
+        <button class="amx-tombol-ghost" data-menit="25">25 menit</button>
+        <button class="amx-tombol-ghost" data-menit="30">30 menit</button>
+        <button class="amx-tombol-ghost" data-menit="45">45 menit</button>
+      </div>
+      <div class="flex gap-2 mt-3">
+        <button id="btn-timer-batal" class="amx-pil flex-1 justify-center">Batalkan timer</button>
+        <button id="btn-timer-tutup" class="amx-pil flex-1 justify-center">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-edit" class="amx-modal hidden" role="dialog" aria-modal="true" aria-label="Ubah lagu">
+    <div class="amx-modal-isi">
+      <h3 class="text-base font-bold">Ubah Lagu</h3>
+      <p id="edit-judul" class="text-xs text-white/70 mt-1 truncate"></p>
+      <p class="text-xs text-white/70 mt-3 mb-2">Playlist:</p>
+      <div id="edit-playlist" class="flex flex-wrap gap-2"></div>
+      <label class="block text-xs text-white/70 mt-3 mb-1" for="edit-tags">Tag (pisahkan dengan koma)</label>
+      <input id="edit-tags" class="amx-input" type="text" autocomplete="off">
+      <div class="flex gap-2 mt-4">
+        <button id="btn-edit-batal" class="amx-pil flex-1 justify-center">Batal</button>
+        <button id="btn-edit-simpan" class="amx-tombol flex-1">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-konfirmasi" class="amx-modal hidden" role="alertdialog" aria-modal="true" aria-label="Konfirmasi">
+    <div class="amx-modal-isi">
+      <p id="konfirmasi-teks" class="text-sm"></p>
+      <div class="flex gap-2 mt-4">
+        <button id="btn-konfirmasi-tidak" class="amx-pil flex-1 justify-center">Batal</button>
+        <button id="btn-konfirmasi-ya" class="amx-tombol flex-1">Ya, hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-wadah" class="amx-toast-wadah" aria-live="polite"></div>
+</div>
+
+<audio id="audio" preload="none"></audio>
+
+<!-- ============ TEMPLATE (diisi js/ui.js lewat textContent) ============ -->
+<template id="tpl-kartu">
+  <article class="amx-kartu" data-f="kartu">
+    <div class="amx-cover w-14 h-14" data-f="cover"><svg class="ik"><use href="#i-not"/></svg></div>
+    <div class="min-w-0 flex-1">
+      <h3 class="amx-judul" data-f="judul"></h3>
+      <p class="amx-artis" data-f="artis"></p>
+      <p class="amx-lisensi" data-f="lisensi"></p>
+    </div>
+    <span class="amx-waktu" data-f="durasi"></span>
+    <button class="amx-ikon amx-hati" data-f="hati" aria-label="Favorit" aria-pressed="false"><svg class="ik"><use href="#i-hati"/></svg></button>
+  </article>
+</template>
+
+<template id="tpl-antrean">
+  <article class="amx-kartu amx-kartu-kecil" data-f="kartu">
+    <div class="amx-cover w-12 h-12" data-f="cover"><svg class="ik"><use href="#i-not"/></svg></div>
+    <div class="min-w-0 flex-1">
+      <h3 class="amx-judul" data-f="judul"></h3>
+      <p class="amx-artis" data-f="artis"></p>
+    </div>
+    <span class="amx-waktu" data-f="durasi"></span>
+    <button class="amx-ikon amx-hati" data-f="hati" aria-label="Favorit" aria-pressed="false"><svg class="ik"><use href="#i-hati"/></svg></button>
+  </article>
+</template>
+
+<template id="tpl-admin-lagu">
+  <article class="amx-kartu amx-kartu-kecil" data-f="kartu">
+    <div class="min-w-0 flex-1">
+      <h3 class="amx-judul" data-f="judul"></h3>
+      <p class="amx-artis" data-f="artis"></p>
+      <p class="amx-lisensi" data-f="playlist"></p>
+    </div>
+    <button class="amx-ikon" data-f="ubah" aria-label="Ubah playlist dan tag"><svg class="ik"><use href="#i-edit"/></svg></button>
+    <button class="amx-ikon" data-f="hapus" aria-label="Hapus lagu"><svg class="ik"><use href="#i-hapus"/></svg></button>
+  </article>
+</template>
+
+<template id="tpl-hasil-jamendo">
+  <article class="amx-kartu amx-kartu-kecil" data-f="kartu">
+    <input type="checkbox" class="amx-cek" data-f="cek" aria-label="Pilih lagu">
+    <div class="amx-cover w-12 h-12" data-f="cover"><svg class="ik"><use href="#i-not"/></svg></div>
+    <div class="min-w-0 flex-1">
+      <h3 class="amx-judul" data-f="judul"></h3>
+      <p class="amx-artis" data-f="artis"></p>
+      <p class="amx-lisensi" data-f="lisensi"></p>
+    </div>
+    <button class="amx-ikon amx-play" data-f="pratinjau" data-status="jeda" aria-label="Pratinjau lagu">
+      <svg class="ik ik-play"><use href="#i-play"/></svg><svg class="ik ik-pause"><use href="#i-pause"/></svg>
+    </button>
+  </article>
+</template>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

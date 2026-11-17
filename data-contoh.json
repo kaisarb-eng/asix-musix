@@ -1,0 +1,62 @@
+{
+  "_catatan": "Data CONTOH untuk mode preview Asix Musix. Bukan lagu asli. Lagu asli diimpor admin dari Jamendo ke Firestore (koleksi songs). Maksimal 3 lagu.",
+  "songs": [
+    {
+      "id": "jm_contoh1",
+      "title": "Dreamscape",
+      "artist": "Aurora Lights",
+      "titleLower": "dreamscape",
+      "artistLower": "aurora lights",
+      "coverUrl": "",
+      "jamendoId": "contoh1",
+      "audioUrl": "",
+      "duration": 236,
+      "playlists": ["santai", "piano"],
+      "tags": ["contoh", "piano", "ambient"],
+      "license": "CC BY-NC-SA (contoh)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "source": "Data contoh (bukan dari Jamendo)",
+      "sourceUrl": "",
+      "addedAt": "2026-01-03T00:00:00Z",
+      "addedBy": "contoh"
+    },
+    {
+      "id": "jm_contoh2",
+      "title": "Cahaya Senja",
+      "artist": "Asix Acoustic Project",
+      "titleLower": "cahaya senja",
+      "artistLower": "asix acoustic project",
+      "coverUrl": "",
+      "jamendoId": "contoh2",
+      "audioUrl": "",
+      "duration": 252,
+      "playlists": ["gitar", "santai"],
+      "tags": ["contoh", "gitar", "akustik"],
+      "license": "CC BY-NC-SA (contoh)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "source": "Data contoh (bukan dari Jamendo)",
+      "sourceUrl": "",
+      "addedAt": "2026-01-02T00:00:00Z",
+      "addedBy": "contoh"
+    },
+    {
+      "id": "jm_contoh3",
+      "title": "Neon Horizon",
+      "artist": "Cyber Wave",
+      "titleLower": "neon horizon",
+      "artistLower": "cyber wave",
+      "coverUrl": "",
+      "jamendoId": "contoh3",
+      "audioUrl": "",
+      "duration": 178,
+      "playlists": ["fokus-tugas", "cari-ide"],
+      "tags": ["contoh", "lofi", "instrumental"],
+      "license": "CC BY-NC-SA (contoh)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "source": "Data contoh (bukan dari Jamendo)",
+      "sourceUrl": "",
+      "addedAt": "2026-01-01T00:00:00Z",
+      "addedBy": "contoh"
+    }
+  ]
+}

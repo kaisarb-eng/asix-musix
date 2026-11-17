@@ -1,0 +1,38 @@
+rules_version = '2';
+
+// =====================================================================
+// Asix Musix (AMX) — firestore.rules
+// Memenuhi fitur: 2 (katalog), 9 (panel admin), 15 (impor Jamendo).
+//
+// Ringkasan:
+// - Koleksi `songs` : semua orang boleh BACA, hanya ADMIN yang boleh TULIS.
+// - Koleksi lain    : ditolak semua (baca dan tulis).
+// - ADMIN = login Google dengan email di bawah DAN email sudah terverifikasi.
+//
+// Email di bawah harus SAMA dengan ADMIN_EMAIL di js/firebase-config.js.
+// Perlu verifikasi: sintaks rules, cek di dokumentasi Firebase
+// jika konsol menandai error.
+// =====================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Pemeriksa admin: login + email cocok + email terverifikasi.
+    function adalahAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == 'burger.kaisar@gmail.com';
+    }
+
+    // Katalog lagu (hasil impor Jamendo, ID dokumen jm_{jamendoId}).
+    match /songs/{songId} {
+      allow read: if true;
+      allow write: if adalahAdmin();
+    }
+
+    // Semua koleksi lain: tolak semuanya.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

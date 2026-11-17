@@ -1,0 +1,29 @@
+{
+  "id": "/",
+  "name": "Asix Musix",
+  "short_name": "Asix Musix",
+  "description": "Pemutar musik instrumen tanpa vokal: gitar, piano, lo-fi, dan lainnya.",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a0902",
+  "theme_color": "#1a0902",
+  "categories": ["music", "entertainment"],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

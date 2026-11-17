@@ -1,0 +1,260 @@
+/* =====================================================================
+   Asix Musix (AMX) - css/style.css (File 5). Memenuhi fitur 3.
+   Gaya kustom: glassmorphism oranye hangat, mobile-first.
+   Melengkapi Tailwind CDN di index.html (Tailwind untuk tata letak).
+
+   KONTRAK UNTUK JS (dipakai ui.js, player.js, timer.js, admin.js):
+   - Tombol play/pause : set data-status="main" atau "jeda" pada .amx-play
+   - Tombol hati/filter: set aria-pressed="true" atau "false"
+   - Seek & volume     : set style --isi (contoh "35%") pada input.amx-range
+   - Cover             : set style.backgroundImage, tambah class .ada-gambar
+   - Kartu sedang main : tambah class .sedang-main pada .amx-kartu
+   - Toast             : buat <div class="amx-toast"> di #toast-wadah
+   ===================================================================== */
+
+:root {
+  --o500: #ff7a00;
+  --o600: #ea580c;
+  --o400: #fb923c;
+  --amber: #ffb020;
+  --kaca: rgba(255, 255, 255, 0.09);
+  --garis: rgba(255, 210, 170, 0.2);
+  --redup: rgba(255, 237, 213, 0.7);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:disabled { opacity: 0.5; cursor: default; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.hidden { display: none !important; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  color: #fff;
+  background:
+    radial-gradient(circle at 20% 8%, rgba(255, 107, 0, 0.55), transparent 45%),
+    radial-gradient(circle at 90% 22%, rgba(255, 140, 0, 0.35), transparent 42%),
+    radial-gradient(circle at 15% 88%, rgba(180, 45, 0, 0.4), transparent 45%),
+    linear-gradient(180deg, #180802 0%, #290f04 35%, #3a1506 65%, #150702 100%);
+  background-attachment: fixed;
+}
+
+/* ---------- Kerangka ---------- */
+.amx-app { position: relative; max-width: 480px; min-height: 100dvh; margin: 0 auto; }
+@media (min-width: 500px) { .amx-app { box-shadow: 0 0 60px rgba(0, 0, 0, 0.5); } }
+.amx-beranda { padding-top: env(safe-area-inset-top, 0px); }
+.amx-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+/* ---------- Ikon ---------- */
+.ik { width: 1.25rem; height: 1.25rem; fill: currentColor; flex-shrink: 0; }
+.ik-kecil { width: 1rem; height: 1rem; }
+
+/* ---------- Tombol ikon & play ---------- */
+.amx-ikon {
+  width: 2.5rem; height: 2.5rem; border-radius: 999px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: rgba(255, 255, 255, 0.85);
+  transition: transform 0.15s, background 0.15s, color 0.15s;
+}
+.amx-ikon:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.amx-ikon:active { transform: scale(0.92); }
+.amx-ikon-besar { width: 3rem; height: 3rem; }
+.amx-ikon-besar .ik { width: 1.75rem; height: 1.75rem; }
+.amx-ikon[aria-pressed="true"] { color: var(--o500); }
+
+.amx-play {
+  width: 2.75rem; height: 2.75rem; border-radius: 999px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center; color: #fff;
+  background: linear-gradient(135deg, var(--o600), var(--amber));
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 20px -2px rgba(255, 122, 0, 0.55);
+  transition: transform 0.15s;
+}
+.amx-play:active { transform: scale(0.92); }
+.amx-play-besar { width: 4rem; height: 4rem; box-shadow: 0 0 30px rgba(255, 107, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.6); }
+.amx-play-besar .ik { width: 1.75rem; height: 1.75rem; }
+[data-status="main"] .ik-play { display: none; }
+[data-status="jeda"] .ik-pause { display: none; }
+
+/* Hati: garis saat mati, terisi oranye saat aktif */
+.amx-hati .ik { fill: none; stroke: currentColor; stroke-width: 2; }
+.amx-hati[aria-pressed="true"] { color: var(--o500); }
+.amx-hati[aria-pressed="true"] .ik { fill: var(--o500); stroke: var(--o500); filter: drop-shadow(0 0 6px rgba(255, 107, 0, 0.8)); }
+
+/* ---------- Logo placeholder ---------- */
+.amx-logo {
+  position: relative; width: 2.5rem; height: 2.5rem; flex-shrink: 0; border-radius: 999px; overflow: hidden;
+  display: grid; place-items: center; font-weight: 700; font-size: 0.95rem;
+  background: linear-gradient(135deg, #111, #333); color: var(--o500); border: 2px solid var(--o500);
+}
+.amx-logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #fff; }
+
+/* ---------- Pencarian, chip, pil ---------- */
+.amx-cari {
+  display: flex; align-items: center; gap: 0.6rem; padding: 0 1rem; min-height: 3rem; border-radius: 16px;
+  background: var(--kaca); border: 1px solid var(--garis); color: var(--redup);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+.amx-cari input, .amx-input { width: 100%; background: transparent; border: 0; outline: 0; color: #fff; font-size: 0.875rem; }
+.amx-cari input::placeholder, .amx-input::placeholder { color: rgba(255, 237, 213, 0.5); }
+.amx-input {
+  min-height: 2.75rem; padding: 0 0.9rem; border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25); border: 1px solid var(--garis);
+}
+.amx-cari:focus-within, .amx-input:focus { border-color: var(--o400); }
+
+.amx-chip, .amx-pil {
+  display: inline-flex; align-items: center; gap: 0.375rem; flex-shrink: 0; white-space: nowrap;
+  border-radius: 999px; font-weight: 500; color: rgba(255, 255, 255, 0.85);
+  background: var(--kaca); border: 1px solid var(--garis);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.amx-chip { min-height: 2.5rem; padding: 0 1rem; font-size: 0.75rem; }
+.amx-pil { min-height: 2.25rem; padding: 0 0.85rem; font-size: 0.75rem; }
+.amx-chip[aria-pressed="true"], .amx-pil[aria-pressed="true"] {
+  color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--o500), #d97706);
+  box-shadow: 0 4px 14px -4px rgba(255, 122, 0, 0.7);
+}
+
+/* ---------- Tombol utama / ghost ---------- */
+.amx-tombol, .amx-tombol-ghost {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0 1.1rem;
+  border-radius: 14px; font-size: 0.875rem; font-weight: 700; transition: transform 0.15s;
+}
+.amx-tombol { color: #fff; background: linear-gradient(135deg, var(--o600), var(--amber)); box-shadow: 0 6px 18px -6px rgba(255, 122, 0, 0.7); }
+.amx-tombol-ghost { background: var(--kaca); border: 1px solid var(--garis); color: #fff; }
+.amx-tombol:active, .amx-tombol-ghost:active { transform: scale(0.97); }
+
+/* ---------- Banner, badge, status, catatan ---------- */
+.amx-banner {
+  display: block; width: calc(100% - 2rem); margin: 0.75rem 1rem 0; padding: 0.7rem 1rem; text-align: left;
+  border-radius: 18px; background: linear-gradient(135deg, rgba(255, 122, 0, 0.3), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 160, 80, 0.4);
+}
+.amx-badge {
+  margin: 0.75rem 1rem 0; padding: 0.4rem 0.8rem; border-radius: 999px; width: fit-content;
+  font-size: 0.6875rem; font-weight: 500; color: #fde68a; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4);
+}
+.amx-status { text-align: center; font-size: 0.75rem; color: var(--redup); padding: 0.6rem 0; }
+.amx-status:empty { display: none; }
+.amx-catatan { margin-top: 1.5rem; text-align: center; font-size: 0.6875rem; line-height: 1.5; color: rgba(255, 237, 213, 0.5); }
+.amx-label { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fdba74; }
+
+/* ---------- Cover ---------- */
+.amx-cover {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;
+  border-radius: 14px; color: rgba(255, 255, 255, 0.6);
+  background: linear-gradient(135deg, var(--o600), #7c2d12) center / cover no-repeat;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.amx-cover.ada-gambar .ik { display: none; }
+.amx-cover-besar {
+  width: 100%; max-width: 290px; aspect-ratio: 1; margin: 0 auto; border-radius: 28px;
+  border: 1px solid rgba(255, 190, 130, 0.3);
+  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 107, 0, 0.15);
+}
+.amx-cover-besar .ik { width: 4rem; height: 4rem; }
+
+/* ---------- Teks lagu ---------- */
+.amx-judul, .amx-artis, .amx-lisensi { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.amx-judul { font-size: 0.875rem; font-weight: 600; color: #fff; }
+.amx-artis { margin-top: 0.1rem; font-size: 0.75rem; color: rgba(255, 237, 213, 0.72); }
+.amx-lisensi { margin-top: 0.1rem; font-size: 0.6875rem; color: rgba(253, 186, 116, 0.75); }
+.amx-lisensi a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.amx-waktu { font-size: 0.75rem; font-weight: 500; color: rgba(255, 237, 213, 0.6); }
+
+/* ---------- Kartu (glass) ---------- */
+.amx-kartu {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem; border-radius: 18px; cursor: pointer;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  transition: background 0.15s, transform 0.15s;
+}
+.amx-kartu:active { background: rgba(255, 255, 255, 0.18); transform: scale(0.99); }
+.amx-kartu-kecil { padding: 0.5rem; border-radius: 16px; }
+.amx-kartu-aktif, .amx-kartu.sedang-main { border-left: 4px solid var(--o400); background: linear-gradient(135deg, rgba(255, 122, 0, 0.22), rgba(255, 255, 255, 0.05)); }
+.amx-kartu-aktif { cursor: default; }
+
+/* ---------- Mini player ---------- */
+.amx-mini {
+  position: fixed; z-index: 30; left: 50%; transform: translateX(-50%);
+  width: calc(min(100%, 480px) - 1.5rem); bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  padding: 0.55rem 0.65rem 0.6rem; border-radius: 24px;
+  background: rgba(30, 12, 4, 0.72); border: 1px solid rgba(255, 190, 130, 0.28);
+  -webkit-backdrop-filter: blur(24px) saturate(160%); backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+.amx-bar { height: 3px; margin: 0 0.25rem 0.5rem; border-radius: 99px; background: rgba(255, 255, 255, 0.15); overflow: hidden; }
+.amx-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--o500), var(--amber)); border-radius: 99px; }
+
+/* ---------- Layar penuh (Now Playing, Antrean, Admin) ---------- */
+.amx-layar {
+  position: fixed; z-index: 40; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: min(100%, 480px); display: flex; flex-direction: column; overflow-y: auto;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  background:
+    radial-gradient(circle at 25% 12%, rgba(255, 107, 0, 0.5), transparent 48%),
+    radial-gradient(circle at 85% 30%, rgba(255, 140, 0, 0.3), transparent 45%),
+    linear-gradient(180deg, #2a1005 0%, #3a1506 55%, #150702 100%);
+  animation: amx-naik 0.28s ease-out;
+}
+@keyframes amx-naik { from { opacity: 0; transform: translate(-50%, 28px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* ---------- Range (seek & volume) ---------- */
+.amx-range {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 1.5rem; background: transparent; cursor: pointer; --isi: 0%;
+}
+.amx-range::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 99px;
+  background: linear-gradient(90deg, var(--o500) var(--isi), rgba(255, 255, 255, 0.18) var(--isi));
+}
+.amx-range::-moz-range-track { height: 6px; border-radius: 99px; background: rgba(255, 255, 255, 0.18); }
+.amx-range::-moz-range-progress { height: 6px; border-radius: 99px; background: var(--o500); }
+.amx-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; margin-top: -5px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--o500); box-shadow: 0 0 10px rgba(255, 122, 0, 0.9);
+}
+.amx-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--o500); box-shadow: 0 0 10px rgba(255, 122, 0, 0.9); }
+
+/* ---------- Lencana timer, panel, segmen, centang ---------- */
+.amx-lencana {
+  position: absolute; top: -2px; right: -6px; padding: 1px 5px; border-radius: 99px;
+  font-size: 0.625rem; font-weight: 700; color: #fff; background: var(--o500);
+}
+.amx-panel { padding: 1rem; border-radius: 20px; background: var(--kaca); border: 1px solid var(--garis); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+.amx-seg { display: flex; padding: 4px; border-radius: 16px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); }
+.amx-seg button { flex: 1; min-height: 2.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; color: rgba(255, 255, 255, 0.7); }
+.amx-seg button[aria-pressed="true"] { color: #fff; background: linear-gradient(135deg, var(--o500), #d97706); }
+.amx-cek { width: 1.25rem; height: 1.25rem; flex-shrink: 0; accent-color: var(--o500); }
+
+/* ---------- Modal & toast ---------- */
+.amx-modal {
+  position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem;
+  background: rgba(0, 0, 0, 0.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.amx-modal-isi {
+  width: min(100%, 360px); padding: 1.25rem; border-radius: 24px;
+  background: linear-gradient(160deg, #3a1506, #1f0b03); border: 1px solid var(--garis);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.amx-toast-wadah {
+  position: fixed; z-index: 60; left: 50%; transform: translateX(-50%); width: min(100% - 2rem, 420px);
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;
+}
+.amx-toast {
+  padding: 0.7rem 1rem; border-radius: 14px; font-size: 0.8125rem; text-align: center;
+  background: rgba(20, 8, 3, 0.92); border: 1px solid rgba(255, 160, 80, 0.4); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: amx-toast 0.25s ease-out;
+}
+@keyframes amx-toast { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .amx-layar, .amx-toast { animation: none; }
+  * { transition: none !important; }
+}
